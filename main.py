@@ -1,13 +1,15 @@
 from flask import Flask, render_template, request, redirect, url_for
 import csv
+from pathlib import Path
 
+path = Path(__file__).resolve().parent
 
 app = Flask(__name__)
 
 # ---------------------------- FLASK ROUTES ------------------------------- #
 @app.route("/")
 def home():
-    with open("cafes-with-longlat.csv", newline="", encoding="utf-8") as csv_file:
+    with open(f"{path}/cafes-with-longlat.csv", newline="", encoding="utf-8") as csv_file:
         cafes = list(csv.DictReader(csv_file))
     return render_template("index.html", cafes=cafes)
 
@@ -28,30 +30,31 @@ def add_cafe():
         "longitude": request.form["longitude"],
     }
 
-    with open("cafes-with-longlat.csv", newline="", encoding="utf-8") as csv_file:
+    with open(f"{path}/cafes-with-longlat.csv", newline="", encoding="utf-8") as csv_file:
         reader = csv.DictReader(csv_file)
         fieldnames = reader.fieldnames
 
-    with open("cafes-with-longlat.csv", "a", newline="", encoding="utf-8") as csv_file:
-        writer = csv.DictWriter(
-            csv_file,
-            fieldnames=fieldnames,
-            extrasaction="ignore"
-        )
-        writer.writerow(new_cafe)
+    with open(f"{path}/cafes-with-longlat.csv", "a", newline="", encoding="utf-8") as csv_file:
+        if fieldnames is not None:
+            writer = csv.DictWriter(
+                csv_file,
+                fieldnames=fieldnames,
+                extrasaction="ignore"
+            )
+            writer.writerow(new_cafe)
 
     return redirect(url_for("home"))
 
 @app.route("/delete/<int:row_index>", methods=["POST"])
 def delete_cafe(row_index):
-    with open("cafes-with-longlat.csv", newline="", encoding="utf-8") as csv_file:
+    with open(f"{path}/cafes-with-longlat.csv", newline="", encoding="utf-8") as csv_file:
         reader = csv.DictReader(csv_file)
         cafes = list(reader)
         fieldnames = reader.fieldnames
 
     cafes.pop(row_index)
 
-    with open("cafes-with-longlat.csv", "w", newline="", encoding="utf-8") as csv_file:
+    with open(f"{path}/cafes-with-longlat.csv", "w", newline="", encoding="utf-8") as csv_file:
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(cafes)

@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
+        <meta name="description" content="Find work- and study-friendly cafés in London." />
         <meta name="author" content="" />
         <title>Work Anywhere</title>
         <link rel="icon" type="image/x-icon" href="/static/assets/favicon.ico" />
@@ -138,11 +138,11 @@
                                     });
                                     console.log("Map created");
                                     map.on("load", () => {
-                                      console.log("Harta s-a încărcat.");
+                                      console.log("Map Loaded");
                                     });
 
                                     map.on("error", (event) => {
-                                      console.error("Eroare MapLibre:", event.error);
+                                      console.error("Error MapLibre:", event.error);
                                     });
 
                                     // ---------------------------- POPUP ---------------------------- //
@@ -188,6 +188,11 @@
                                                 Open in Google Maps
                                             </a>
                                         `);
+
+                                        document.getElementById("map").scrollIntoView({
+                                            behavior: "smooth",
+                                            block: "center"
+                                        });
 
                                         // Open Google Maps when the marker is clicked
                                         coffeeMarker.onclick = function () {
@@ -248,12 +253,12 @@
                                             <button
                                                 type="button"
                                                 class="btn btn-link p-0 text-start text-decoration-none"
-                                                onclick="goToCafe(
+                                                onclick='goToCafe(
                                                     {{ cafe.longitude }},
                                                     {{ cafe.latitude }},
-                                                    '{{ cafe.name }}',
-                                                    '{{ cafe.map_url }}'
-                                                )">
+                                                    {{ cafe.name | tojson }},
+                                                    {{ cafe.map_url | tojson }}
+                                                )'>
                                                 <h5 class="mb-1">{{ cafe.name }}</h5>
                                             </button>
                                             <form
@@ -294,6 +299,7 @@
                                     </div>
                                 </div>
                                 {% endfor %}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -385,7 +391,7 @@
 
                                 <div class="form-check">
                                   <input class="form-check-input" id="has_sockets" name="has_sockets" type="checkbox" value="1">
-                                  <label class="form-check-label" for="has_sockets">Socket</label>
+                                  <label class="form-check-label" for="has_sockets">Sockets</label>
                                 </div>
 
                                 <div class="form-check">
